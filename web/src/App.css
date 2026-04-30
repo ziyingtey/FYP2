@@ -48,6 +48,14 @@ body {
   letter-spacing: 0.02em;
 }
 
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  justify-content: flex-end;
+  max-width: 70%;
+}
+
 .tabs button {
   background: transparent;
   border: 1px solid transparent;
@@ -149,6 +157,10 @@ body {
 .num {
   font-size: 1.75rem;
   font-weight: 700;
+}
+
+.num.small {
+  font-size: 1.1rem;
 }
 
 .bar {

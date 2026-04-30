@@ -1,11 +1,15 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace QueueSystem.Api.Models;
 
+[Table("queue")]
 public class QueueTicket
 {
     public int Id { get; set; }
     public int BranchId { get; set; }
     public Branch? Branch { get; set; }
-    public BankServiceType ServiceType { get; set; }
+    public int ServiceId { get; set; }
+    public BankService? Service { get; set; }
     public string TicketCode { get; set; } = "";
     public TicketStatus Status { get; set; }
     public DateTime CreatedUtc { get; set; }

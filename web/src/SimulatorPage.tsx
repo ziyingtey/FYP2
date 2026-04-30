@@ -36,7 +36,7 @@ export function SimulatorPage() {
     setBusy(true)
     setErr(null)
     try {
-      const r = await joinQueue(st)
+      const r = await joinQueue(st, true)
       setMsg(
         r.queueBookingBlocked
           ? `Blocked: ${r.message ?? 'capacity'}`

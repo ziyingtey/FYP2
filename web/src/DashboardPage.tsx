@@ -53,7 +53,12 @@ export function DashboardPage({
         <div>
           <h1>{data.branchName}</h1>
           <p className="muted">
+            {data.location ? `${data.location} · ` : ''}
             Staff dashboard · SignalR: <strong>{connState}</strong>
+          </p>
+          <p className="muted small">
+            Crowd bands: Medium ≥{data.crowdMediumStartsAtPercent}% · High ≥{data.crowdHighStartsAtPercent}% · Overcrowded ≥
+            {data.overcrowdStartsAtPercent}%
           </p>
         </div>
         <div className="crowd-pill" style={{ borderColor: crowdColor(data.crowdLevel) }}>

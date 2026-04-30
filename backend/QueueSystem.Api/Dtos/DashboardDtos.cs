@@ -27,12 +27,16 @@ public record CounterStateDto(
 public record BranchDashboardDto(
     [property: JsonPropertyName("branchId")] int BranchId,
     [property: JsonPropertyName("branchName")] string BranchName,
+    [property: JsonPropertyName("location")] string Location,
     [property: JsonPropertyName("maxCapacity")] int MaxCapacity,
     [property: JsonPropertyName("occupancy")] int Occupancy,
     [property: JsonPropertyName("occupancyPercent")] double OccupancyPercent,
     [property: JsonPropertyName("crowdLevel")] string CrowdLevel,
     [property: JsonPropertyName("queueBookingBlocked")] bool QueueBookingBlocked,
     [property: JsonPropertyName("bookingBlockReason")] string? BookingBlockReason,
+    [property: JsonPropertyName("crowdMediumStartsAtPercent")] int CrowdMediumStartsAtPercent,
+    [property: JsonPropertyName("crowdHighStartsAtPercent")] int CrowdHighStartsAtPercent,
+    [property: JsonPropertyName("overcrowdStartsAtPercent")] int OvercrowdStartsAtPercent,
     [property: JsonPropertyName("services")] IReadOnlyList<ServiceQueueStateDto> Services,
     [property: JsonPropertyName("counters")] IReadOnlyList<CounterStateDto> Counters,
     [property: JsonPropertyName("recentTickets")] IReadOnlyList<TicketSummaryDto> RecentTickets

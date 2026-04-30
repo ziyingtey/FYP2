@@ -1,3 +1,13 @@
+import type {
+  BranchDetail,
+  CrowdLogRow,
+  DailyReport,
+  PredictionLogRow,
+  ServiceCatalogItem,
+  SimulationRunRow,
+  StaffListItem,
+  TicketHistoryRow,
+} from './types'
 import { BRANCH_ID } from './types'
 
 async function json<T>(res: Response): Promise<T> {
@@ -21,11 +31,11 @@ export interface JoinQueueResult {
   message?: string | null
 }
 
-export async function joinQueue(serviceType: number) {
+export async function joinQueue(serviceType: number, isSimulated = false) {
   const res = await fetch(`/api/branches/${BRANCH_ID}/queue/join`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ serviceType }),
+    body: JSON.stringify({ serviceType, isSimulated }),
   })
   return json<JoinQueueResult>(res)
 }
@@ -90,4 +100,68 @@ export async function simulateGenerate(count: number, mode: 'random' | 'manual',
     body: JSON.stringify({ count, mode, serviceType }),
   })
   return json<{ generated: number; message: string }>(res)
+}
+
+export async function fetchBranchInfo() {
+  const res = await fetch(`/api/branches/${BRANCH_ID}/info`)
+  return json<BranchDetail>(res)
+}
+
+export async function patchBranchSettings(body: {
+  name?: string
+  location?: string
+  maxCapacity?: number
+  crowdMediumStartsAtPercent?: number
+  crowdHighStartsAtPercent?: number
+  overcrowdStartsAtPercent?: number
+}) {
+  const res = await fetch(`/api/branches/${BRANCH_ID}/settings`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  })
+  return json<BranchDetail>(res)
+}
+
+export async function fetchServiceCatalog() {
+  const res = await fetch('/api/catalog/services')
+  return json<ServiceCatalogItem[]>(res)
+}
+
+export async function fetchStaffList() {
+  const res = await fetch(`/api/branches/${BRANCH_ID}/staff`)
+  return json<StaffListItem[]>(res)
+}
+
+export async function fetchCrowdLogs(take = 40) {
+  const res = await fetch(`/api/branches/${BRANCH_ID}/insights/crowd-logs?take=${take}`)
+  return json<CrowdLogRow[]>(res)
+}
+
+export async function fetchPredictionLogs(take = 60) {
+  const res = await fetch(`/api/branches/${BRANCH_ID}/insights/prediction-logs?take=${take}`)
+  return json<PredictionLogRow[]>(res)
+}
+
+export async function fetchSimulationRuns(take = 20) {
+  const res = await fetch(`/api/branches/${BRANCH_ID}/insights/simulation-runs?take=${take}`)
+  return json<SimulationRunRow[]>(res)
+}
+
+export async function fetchTicketHistory(take = 50) {
+  const res = await fetch(`/api/branches/${BRANCH_ID}/insights/ticket-history?take=${take}`)
+  return json<TicketHistoryRow[]>(res)
+}
+
+export async function getDailyReport(date?: string) {
+  const q = date ? `?date=${encodeURIComponent(date)}` : ''
+  const res = await fetch(`/api/branches/${BRANCH_ID}/reports/daily${q}`)
+  if (res.status === 404) return null
+  return json<DailyReport>(res)
+}
+
+export async function refreshDailyReport(date?: string) {
+  const q = date ? `?date=${encodeURIComponent(date)}` : ''
+  const res = await fetch(`/api/branches/${BRANCH_ID}/reports/daily/refresh${q}`, { method: 'POST' })
+  return json<DailyReport>(res)
 }
