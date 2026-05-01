@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QueueSystem.Api.Data;
 
@@ -10,9 +11,11 @@ using QueueSystem.Api.Data;
 namespace QueueSystem.Api.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260430134524_StaffPortalAuth")]
+    partial class StaffPortalAuth
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.11");
@@ -370,15 +373,11 @@ namespace QueueSystem.Api.Data.Migrations
 
                     b.Property<string>("Mode")
                         .IsRequired()
-                        .HasMaxLength(64)
+                        .HasMaxLength(32)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("RequestedCount")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("Scenario")
-                        .HasMaxLength(64)
-                        .HasColumnType("TEXT");
 
                     b.Property<int?>("StartedByStaffId")
                         .HasColumnType("INTEGER");

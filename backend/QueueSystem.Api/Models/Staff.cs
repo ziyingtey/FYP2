@@ -11,4 +11,7 @@ public class Staff
     public string Name { get; set; } = "";
     public StaffRole Role { get; set; }
     public string? Email { get; set; }
+    /// <summary>Unique login for branch portal (staff / manager).</summary>
+    public string? LoginEmail { get; set; }
+    public string? PasswordHash { get; set; }
 }

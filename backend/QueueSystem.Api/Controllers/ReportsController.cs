@@ -1,6 +1,8 @@
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using QueueSystem.Api.Auth;
 using QueueSystem.Api.Data;
 using QueueSystem.Api.Models;
 using QueueSystem.Api.Services;
@@ -19,6 +21,8 @@ public record DailyReportResponse(
 
 [ApiController]
 [Route("api/branches/{branchId:int}/reports")]
+[Authorize(Policy = "ManagerOnly")]
+[ServiceFilter(typeof(BranchRouteMatchesClaimFilter))]
 public class ReportsController : ControllerBase
 {
     [HttpGet("daily")]

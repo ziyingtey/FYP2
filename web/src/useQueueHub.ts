@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import * as signalR from '@microsoft/signalr'
 import type { BranchDashboard } from './types'
-import { BRANCH_ID } from './types'
 import { fetchDashboard } from './api'
+import { getApiBranchId, getToken } from './session'
 
 export function useQueueHub() {
   const [data, setData] = useState<BranchDashboard | null>(null)
@@ -11,6 +11,15 @@ export function useQueueHub() {
 
   useEffect(() => {
     let cancelled = false
+    const token = getToken()
+    if (!token) {
+      setConnState('signed-out')
+      setError('Not signed in')
+      return
+    }
+
+    const branchId = getApiBranchId()
+
     ;(async () => {
       try {
         const initial = (await fetchDashboard()) as BranchDashboard
@@ -21,7 +30,9 @@ export function useQueueHub() {
     })()
 
     const connection = new signalR.HubConnectionBuilder()
-      .withUrl('/hubs/queue')
+      .withUrl('/hubs/queue', {
+        accessTokenFactory: () => getToken() ?? '',
+      })
       .withAutomaticReconnect()
       .build()
 
@@ -38,7 +49,7 @@ export function useQueueHub() {
       .start()
       .then(() => {
         setConnState('connected')
-        return connection.invoke('SubscribeBranch', BRANCH_ID)
+        return connection.invoke('SubscribeBranch', branchId)
       })
       .catch((e) => {
         setConnState('error')

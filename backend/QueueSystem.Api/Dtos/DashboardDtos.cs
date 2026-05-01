@@ -60,7 +60,8 @@ public record JoinQueueResultDto(
 public record SimulatorGenerateRequest(
     [property: JsonPropertyName("count")] int Count,
     [property: JsonPropertyName("mode")] string Mode,
-    [property: JsonPropertyName("serviceType")] BankServiceType? ServiceType
+    [property: JsonPropertyName("serviceType")] BankServiceType? ServiceType,
+    [property: JsonPropertyName("scenario")] string? Scenario
 );
 
 public record CallNextRequest([property: JsonPropertyName("counterId")] int CounterId);

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QueueSystem.Api.Data;
@@ -7,6 +8,7 @@ namespace QueueSystem.Api.Controllers;
 
 [ApiController]
 [Route("api/catalog")]
+[AllowAnonymous]
 public class CatalogController : ControllerBase
 {
     private readonly AppDbContext _db;

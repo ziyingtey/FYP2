@@ -138,6 +138,7 @@ export function AnalyticsPage() {
                 <th>Time</th>
                 <th>Gen / req</th>
                 <th>Mode</th>
+                <th>Scenario</th>
               </tr>
             </thead>
             <tbody>
@@ -151,6 +152,7 @@ export function AnalyticsPage() {
                     {x.mode}
                     {x.fixedServiceCode ? ` · ${x.fixedServiceCode}` : ''}
                   </td>
+                  <td>{x.scenario ?? '—'}</td>
                 </tr>
               ))}
             </tbody>

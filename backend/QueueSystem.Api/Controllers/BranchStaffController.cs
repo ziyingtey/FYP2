@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using QueueSystem.Api.Auth;
 using QueueSystem.Api.Data;
 using QueueSystem.Api.Dtos;
 using QueueSystem.Api.Models;
@@ -8,6 +10,8 @@ namespace QueueSystem.Api.Controllers;
 
 [ApiController]
 [Route("api/branches/{branchId:int}/staff")]
+[Authorize(Policy = "FloorStaff")]
+[ServiceFilter(typeof(BranchRouteMatchesClaimFilter))]
 public class BranchStaffController : ControllerBase
 {
     private readonly AppDbContext _db;

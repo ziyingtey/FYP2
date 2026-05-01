@@ -60,8 +60,20 @@ public record SimulationRunDto(
     [property: JsonPropertyName("requestedCount")] int RequestedCount,
     [property: JsonPropertyName("generatedCount")] int GeneratedCount,
     [property: JsonPropertyName("mode")] string Mode,
+    [property: JsonPropertyName("scenario")] string? Scenario,
     [property: JsonPropertyName("fixedServiceCode")] string? FixedServiceCode,
     [property: JsonPropertyName("createdUtc")] DateTime CreatedUtc
+);
+
+public record BranchSummaryDto(
+    [property: JsonPropertyName("branchId")] int BranchId,
+    [property: JsonPropertyName("name")] string Name,
+    [property: JsonPropertyName("location")] string Location,
+    [property: JsonPropertyName("maxCapacity")] int MaxCapacity,
+    [property: JsonPropertyName("occupancy")] int Occupancy,
+    [property: JsonPropertyName("occupancyPercent")] double OccupancyPercent,
+    [property: JsonPropertyName("crowdLevel")] string CrowdLevel,
+    [property: JsonPropertyName("queueBookingBlocked")] bool QueueBookingBlocked
 );
 
 public record TicketHistoryDto(

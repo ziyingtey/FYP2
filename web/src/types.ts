@@ -92,8 +92,20 @@ export interface SimulationRunRow {
   requestedCount: number
   generatedCount: number
   mode: string
+  scenario: string | null
   fixedServiceCode: string | null
   createdUtc: string
+}
+
+export interface BranchSummary {
+  branchId: number
+  name: string
+  location: string
+  maxCapacity: number
+  occupancy: number
+  occupancyPercent: number
+  crowdLevel: string
+  queueBookingBlocked: boolean
 }
 
 export interface TicketHistoryRow {
@@ -117,5 +129,3 @@ export interface DailyReport {
   busiestServiceCode: string | null
   generatedUtc: string
 }
-
-export const BRANCH_ID = 1

@@ -1,6 +1,8 @@
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using QueueSystem.Api.Auth;
 using QueueSystem.Api.Data;
 using QueueSystem.Api.Dtos;
 using QueueSystem.Api.Models;
@@ -10,6 +12,8 @@ namespace QueueSystem.Api.Controllers;
 
 [ApiController]
 [Route("api/branches/{branchId:int}")]
+[Authorize(Policy = "FloorStaff")]
+[ServiceFilter(typeof(BranchRouteMatchesClaimFilter))]
 public class BranchesController : ControllerBase
 {
     private readonly IQueueOrchestrator _queue;
@@ -43,6 +47,7 @@ public class BranchesController : ControllerBase
     }
 
     [HttpPatch("settings")]
+    [Authorize(Policy = "ManagerOnly")]
     public async Task<ActionResult<BranchDetailDto>> PatchBranchSettings(int branchId, [FromBody] PatchBranchSettingsRequest body, CancellationToken ct)
     {
         var b = await _db.Branches.FirstOrDefaultAsync(x => x.Id == branchId, ct);
@@ -79,12 +84,15 @@ public record JoinQueueBody(
 
 [ApiController]
 [Route("api/branches/{branchId:int}/queue")]
+[Authorize(Policy = "FloorStaff")]
+[ServiceFilter(typeof(BranchRouteMatchesClaimFilter))]
 public class QueueActionsController : ControllerBase
 {
     private readonly IQueueOrchestrator _queue;
 
     public QueueActionsController(IQueueOrchestrator queue) => _queue = queue;
 
+    [AllowAnonymous]
     [HttpPost("join")]
     public async Task<ActionResult<JoinQueueResultDto>> Join(int branchId, [FromBody] JoinQueueBody body, CancellationToken ct)
     {

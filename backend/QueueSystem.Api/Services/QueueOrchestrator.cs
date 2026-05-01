@@ -16,7 +16,7 @@ public interface IQueueOrchestrator
     Task CompleteTicketAsync(int branchId, int ticketId, CancellationToken ct = default);
     Task RecallTicketAsync(int branchId, int ticketId, CancellationToken ct = default);
     Task ResetDailyAsync(int branchId, CancellationToken ct = default);
-    Task<int> SimulatorGenerateAsync(int branchId, int count, string mode, BankServiceType? fixedService, CancellationToken ct = default);
+    Task<int> SimulatorGenerateAsync(int branchId, int count, string mode, BankServiceType? fixedService, string? scenario, CancellationToken ct = default);
     Task SetCounterAsync(int counterId, bool? isOpen, bool? staffAvailable, BankServiceType? serviceType, CancellationToken ct = default);
     Task NotifyDashboardAsync(int branchId, CancellationToken ct = default);
 }
@@ -180,17 +180,18 @@ public class QueueOrchestrator : IQueueOrchestrator
         await BroadcastAsync(branchId, ct);
     }
 
-    public async Task<int> SimulatorGenerateAsync(int branchId, int count, string mode, BankServiceType? fixedService, CancellationToken ct = default)
+    public async Task<int> SimulatorGenerateAsync(int branchId, int count, string mode, BankServiceType? fixedService, string? scenario = null, CancellationToken ct = default)
     {
+        var effectiveCount = SimulationScenarioHelper.AdjustCount(count, scenario);
         var rnd = new Random();
         var added = 0;
-        for (var i = 0; i < count; i++)
+        for (var i = 0; i < effectiveCount; i++)
         {
             BankServiceType st;
             if (string.Equals(mode, "manual", StringComparison.OrdinalIgnoreCase) && fixedService.HasValue)
                 st = fixedService.Value;
             else
-                st = (BankServiceType)rnd.Next(0, 3);
+                st = SimulationScenarioHelper.PickRandomService(rnd, scenario);
 
             var result = await JoinQueueAsync(branchId, st, isSimulated: true, ct);
             if (!result.QueueBookingBlocked) added++;
@@ -201,9 +202,10 @@ public class QueueOrchestrator : IQueueOrchestrator
         {
             BranchId = branchId,
             StartedByStaffId = null,
-            RequestedCount = count,
+            RequestedCount = effectiveCount,
             GeneratedCount = added,
             Mode = mode,
+            Scenario = string.IsNullOrWhiteSpace(scenario) ? null : scenario.Trim(),
             FixedServiceId = fixedService.HasValue ? ServiceIdMapping.FromApi(fixedService.Value) : null,
             CreatedUtc = DateTime.UtcNow
         });

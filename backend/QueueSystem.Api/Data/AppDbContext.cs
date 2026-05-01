@@ -46,6 +46,9 @@ public class AppDbContext : DbContext
             e.HasOne(x => x.Branch).WithMany().HasForeignKey(x => x.BranchId);
             e.Property(x => x.Name).HasMaxLength(200);
             e.Property(x => x.Email).HasMaxLength(256);
+            e.Property(x => x.LoginEmail).HasMaxLength(256);
+            e.Property(x => x.PasswordHash).HasMaxLength(512);
+            e.HasIndex(x => x.LoginEmail).IsUnique();
         });
 
         modelBuilder.Entity<Counter>(e =>
@@ -129,7 +132,8 @@ public class AppDbContext : DbContext
             e.HasOne(x => x.Branch).WithMany().HasForeignKey(x => x.BranchId);
             e.HasOne(x => x.StartedByStaff).WithMany().HasForeignKey(x => x.StartedByStaffId).OnDelete(DeleteBehavior.SetNull);
             e.HasOne(x => x.FixedService).WithMany().HasForeignKey(x => x.FixedServiceId).OnDelete(DeleteBehavior.SetNull);
-            e.Property(x => x.Mode).HasMaxLength(32);
+            e.Property(x => x.Mode).HasMaxLength(64);
+            e.Property(x => x.Scenario).HasMaxLength(64);
         });
     }
 }

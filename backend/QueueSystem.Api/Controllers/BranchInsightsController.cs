@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using QueueSystem.Api.Auth;
 using QueueSystem.Api.Data;
 using QueueSystem.Api.Dtos;
 using QueueSystem.Api.Models;
@@ -8,6 +10,8 @@ namespace QueueSystem.Api.Controllers;
 
 [ApiController]
 [Route("api/branches/{branchId:int}/insights")]
+[Authorize(Policy = "ManagerOnly")]
+[ServiceFilter(typeof(BranchRouteMatchesClaimFilter))]
 public class BranchInsightsController : ControllerBase
 {
     private readonly AppDbContext _db;
@@ -59,6 +63,7 @@ public class BranchInsightsController : ControllerBase
             r.RequestedCount,
             r.GeneratedCount,
             r.Mode,
+            r.Scenario,
             r.FixedServiceId.HasValue && codes.TryGetValue(r.FixedServiceId.Value, out var c) ? c : null,
             r.CreatedUtc)).ToList();
         return Ok(dtos);
